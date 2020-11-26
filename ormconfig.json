@@ -5,7 +5,7 @@
   "username": "Classsed",
   "password": "root",
   "database": "readit",
-  "synchronize": true,
+  "synchronize": false,
   "logging": true,
   "entities": ["src/entities/**/*.ts"],
   "migrations": ["src/migrations/**/*.ts"],
