@@ -2,7 +2,7 @@
   "type": "postgres",
   "host": "localhost",
   "port": 5432,
-  "username": "Classsed",
+  "username": "classsed",
   "password": "root",
   "database": "readit",
   "synchronize": false,
