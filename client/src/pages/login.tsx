@@ -7,10 +7,8 @@ import { useRouter } from 'next/router'
 import InputGroup from '../components/InputGroup'
 
 export default function Register() {
-  const [email, setEmail] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [agreement, setAgreement] = useState(false)
   const [errors, setErrors] = useState<any>({})
 
   const router = useRouter()
@@ -18,19 +16,13 @@ export default function Register() {
   const submitForm = async (event: FormEvent) => {
     event.preventDefault()
 
-    if (!agreement) {
-      setErrors({ ...errors, agreement: 'You must agree to T&Cs' })
-      return
-    }
-
     try {
-      await Axios.post('/auth/register', {
-        email,
-        password,
+      await Axios.post('/auth/login', {
         username,
+        password,
       })
 
-      router.push('/login')
+      router.push('/')
     } catch (err) {
       setErrors(err.response.data)
     }
@@ -39,7 +31,7 @@ export default function Register() {
   return (
     <div className="flex">
       <Head>
-        <title>Register</title>
+        <title>Login</title>
       </Head>
 
       <div
@@ -48,34 +40,11 @@ export default function Register() {
       ></div>
       <div className="flex flex-col justify-center pl-6">
         <div className="w-70">
-          <h1 className="mb-2 text-lg font-medium">Sign Up</h1>
+          <h1 className="mb-2 text-lg font-medium">Login</h1>
           <p className="mb-10 text-xs">
             By continuing, you agree to our User Agreement and Privacy Policy
           </p>
           <form onSubmit={submitForm}>
-            <div className="mb-6">
-              <input
-                type="checkbox"
-                className="mr-1 cursor-pointer"
-                id="agreement"
-                checked={agreement}
-                onChange={(e) => setAgreement(e.target.checked)}
-              />
-              <label htmlFor="agreement" className="text-xs cursor-pointer">
-                I agree to get emails about cool stuff on Readit
-              </label>
-              <small className="block font-medium text-red-600">
-                {errors.agreement}
-              </small>
-            </div>
-            <InputGroup
-              className="mb-2"
-              type="email"
-              value={email}
-              setValue={setEmail}
-              placeholder="EMAIL"
-              error={errors.email}
-            />
             <InputGroup
               className="mb-2"
               type="text"
@@ -94,13 +63,13 @@ export default function Register() {
             />
 
             <button className="w-full py-2 mb-4 text-xs font-bold text-white uppercase bg-blue-500 border border-blue-500 rounded">
-              Sign Up
+              Login
             </button>
           </form>
           <small>
-            Already a readitor?
-            <Link href="/login">
-              <a className="ml-1 text-blue-500 uppercase">Log In</a>
+            New to Readit?
+            <Link href="/register">
+              <a className="ml-1 text-blue-500 uppercase">Sign Up</a>
             </Link>
           </small>
         </div>
