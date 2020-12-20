@@ -11,6 +11,7 @@
     "@types/jsonwebtoken": "^8.5.0",
     "@types/morgan": "^1.9.2",
     "@types/node": "^14.14.9",
+    "concurrently": "^5.3.0",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.6",
     "ts-node": "^9.0.0",
@@ -28,11 +29,15 @@
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.4.0",
     "reflect-metadata": "^0.1.10",
-    "typeorm": "0.2.29"
+    "typeorm": "0.2.29",
+    "typeorm-seeding": "^1.6.1"
   },
   "scripts": {
     "start": "ts-node src/server.ts",
-    "dev": "nodemon --exec ts-node src/server.ts",
-    "typeorm": "ts-node ./node_modules/typeorm/cli.js"
+    "server": "nodemon --exec ts-node src/server.ts",
+    "client": "cd client && npm run dev",
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js",
+    "dev": "concurrently \"npm run server\" \"npm run client\" --names server,client",
+    "seed": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed"
   }
 }
