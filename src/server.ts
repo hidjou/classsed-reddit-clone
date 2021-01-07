@@ -12,6 +12,7 @@ import authRoutes from './routes/auth'
 import postRoutes from './routes/posts'
 import subRoutes from './routes/subs'
 import miscRoutes from './routes/misc'
+import userRoutes from './routes/users'
 
 import trim from './middleware/trim'
 
@@ -36,6 +37,7 @@ app.use('/api/auth', authRoutes)
 app.use('/api/posts', postRoutes)
 app.use('/api/subs', subRoutes)
 app.use('/api/misc', miscRoutes)
+app.use('/api/users', userRoutes)
 
 app.listen(PORT, async () => {
   console.log(`Server running at http://localhost:${PORT}`)
