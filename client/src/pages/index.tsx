@@ -1,8 +1,8 @@
 import Head from 'next/head'
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import useSWR from 'swr'
+import useSWR, { useSWRInfinite } from 'swr'
 import Image from 'next/image'
 
 import { Post, Sub } from '../types'
@@ -14,10 +14,50 @@ import { useAuthState } from '../context/auth'
 dayjs.extend(relativeTime)
 
 export default function Home() {
-  const { data: posts } = useSWR<Post[]>('/posts')
+  const [observedPost, setObservedPost] = useState('')
+
+  // const { data: posts } = useSWR<Post[]>('/posts')
   const { data: topSubs } = useSWR<Sub[]>('/misc/top-subs')
 
   const { authenticated } = useAuthState()
+
+  const {
+    data,
+    error,
+    mutate,
+    size: page,
+    setSize: setPage,
+    isValidating,
+    revalidate,
+  } = useSWRInfinite<Post[]>((index) => `/posts?page=${index}`)
+
+  const posts: Post[] = data ? [].concat(...data) : []
+
+  useEffect(() => {
+    if (!posts || posts.length === 0) return
+
+    const id = posts[posts.length - 1].identifier
+
+    if (id !== observedPost) {
+      setObservedPost(id)
+      observeElement(document.getElementById(id))
+    }
+  }, [posts])
+
+  const observeElement = (element: HTMLElement) => {
+    if (!element) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting === true) {
+          console.log('Reached bottom of post')
+          setPage(page + 1)
+          observer.unobserve(element)
+        }
+      },
+      { threshold: 1 }
+    )
+    observer.observe(element)
+  }
 
   return (
     <Fragment>
@@ -27,9 +67,17 @@ export default function Home() {
       <div className="container flex pt-4">
         {/* Posts feed */}
         <div className="w-full px-4 md:w-160 md:p-0">
+          {isValidating && <p className="text-lg text-center">Loading..</p>}
           {posts?.map((post) => (
-            <PostCard post={post} key={post.identifier} />
+            <PostCard
+              post={post}
+              key={post.identifier}
+              revalidate={revalidate}
+            />
           ))}
+          {isValidating && posts.length > 0 && (
+            <p className="text-lg text-center">Loading More..</p>
+          )}
         </div>
         {/* Sidebar */}
         <div className="hidden ml-6 md:block w-80">
