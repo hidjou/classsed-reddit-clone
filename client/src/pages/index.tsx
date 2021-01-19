@@ -19,18 +19,22 @@ export default function Home() {
   // const { data: posts } = useSWR<Post[]>('/posts')
   const { data: topSubs } = useSWR<Sub[]>('/misc/top-subs')
 
+  const description =
+    "Reddit is a network of communities based on people's interests. Find communities you're interested in, and become part of an online community!"
+  const title = 'readit: the front page of the internet'
+
   const { authenticated } = useAuthState()
 
   const {
     data,
     error,
-    mutate,
     size: page,
     setSize: setPage,
     isValidating,
     revalidate,
   } = useSWRInfinite<Post[]>((index) => `/posts?page=${index}`)
 
+  const isInitialLoading = !data && !error
   const posts: Post[] = data ? [].concat(...data) : []
 
   useEffect(() => {
@@ -62,12 +66,17 @@ export default function Home() {
   return (
     <Fragment>
       <Head>
-        <title>readit: the front page of the internet</title>
+        <title>{title}</title>
+        <meta name="description" content={description}></meta>
+        <meta property="og:description" content={description} />
+        <meta property="og:title" content={title} />
+        <meta property="twitter:description" content={description} />
+        <meta property="twitter:title" content={title} />
       </Head>
       <div className="container flex pt-4">
         {/* Posts feed */}
         <div className="w-full px-4 md:w-160 md:p-0">
-          {isValidating && <p className="text-lg text-center">Loading..</p>}
+          {isInitialLoading && <p className="text-lg text-center">Loading..</p>}
           {posts?.map((post) => (
             <PostCard
               post={post}
