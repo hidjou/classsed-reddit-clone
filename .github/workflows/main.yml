@@ -11,7 +11,14 @@ jobs:
       - name: Rebuild server
         uses: garygrossgarten/github-action-ssh@release
         with:
-          command: ls -a
+          command: |
+            cd readit.com
+            git pull
+            npm install
+            npx tsc
+            cd client
+            npm run build
+            pm2 restart server client
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           privateKey: ${{ secrets.PRIVATE_KEY}}
