@@ -2,7 +2,7 @@ name: Pull code, rebuild files and restart pm2 processes
 
 on:
   push:
-    branches: [master]
+    branches: [main]
 
 jobs:
   update:
