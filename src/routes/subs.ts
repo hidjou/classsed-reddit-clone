@@ -52,6 +52,8 @@ const getSub = async (req: Request, res: Response) => {
 
   try {
     const sub = await Sub.findOneOrFail({ name })
+    if (!sub) return res.status(404).json({ error: "Sub does not exists" });
+    
     const posts = await Post.find({
       where: { sub },
       order: { createdAt: 'DESC' },
